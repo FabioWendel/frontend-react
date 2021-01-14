@@ -6,54 +6,55 @@ import { success, error } from '../../../../utils/toast'
 export default class ModalEdit extends Component {
   state = {
     name: "",
-    cod: "",
+    code: "",
     value: "",
-    qtd: "",
+    quantity: "",
     id: null,
     errors: {}
   };
 
   LoadData = () =>{
-    const {name,cod, value, qtd, id} = this.props.itemSelect;
-    this.setState({name,cod, value, qtd, id})
+    const {name,code, value, quantity, id} = this.props.itemSelect;
+    this.setState({name,code, value, quantity, id})
   }
 
   clear = () => {
-    this.setState({name: "",cod: "", value:"", qtd:""})
+    this.setState({name: "",code: "", value:"", quantity:""})
   }
 
   onSave = async () => {
-    const { name, cod, value, qtd, id } = this.state;
+    const { name, code, value, quantity, id } = this.state;
     const errors = this.validateForm();
     if(errors){
       error("Preencha todos os campos obrigatórios!");
       return;
     }
     try {
-      let data = {"name": name, "cod": cod, "value": value, "qtd": qtd};
-      await api.put(`/produto/${id}/`, data);
+      let data = {"name": name, "code": code, "value": value, "quantity": quantity};
+      await api.put(`/produtos/${id}/`, data);
       success("Produto salvo com sucesso!");
       this.props.callback(false);
-    } catch (error) {
-      error("Ops... algum problema")
+    } catch (e) {
+      error(e.response.data.error !== "Token not provided" ? "Ops... algum problema" : "Token inválido faça Login e tente Novamente");
+
     }
   }
 
   validateForm = () => {
     const errors = {};
-    const {name, cod, value, qtd} = this.state;
+    const {name, code, value, quantity} = this.state;
 
     if (name === "") {
       errors["name"] = true;
     }
-    if (cod === "") {
-      errors["cod"] = true;
+    if (code === "") {
+      errors["code"] = true;
     }
     if (value === "") {
       errors["value"] = true;
     }
-    if (qtd === "") {
-      errors["qtd"] = true;
+    if (quantity === "") {
+      errors["quantity"] = true;
     }
     
     this.setState({ errors });
@@ -61,11 +62,11 @@ export default class ModalEdit extends Component {
   };
 
   clear = () => {
-    this.setState({name: "",cod: "", value:"", qtd:""})
+    this.setState({name: "",code: "", value:"", quantity:""})
   };
 
   render() {
-    const {name, cod, value, qtd, errors} = this.state;
+    const {name, code, value, quantity, errors} = this.state;
 
     return (
       <Modal
@@ -92,8 +93,8 @@ export default class ModalEdit extends Component {
             <Form.Input
               label="Código"
               placeholder="22883044"
-              name="cod"
-              value={cod}
+              name="code"
+              value={code}
               maxLength="30"
               error={errors["cod"] ? true : false}
               onChange={(e)=>this.setState({cod: e.target.value})}
@@ -119,11 +120,11 @@ export default class ModalEdit extends Component {
               placeholder="3"
               required
               type="number"
-              value={qtd}
+              value={quantity}
               maxLength="6"
-              error={errors["qtd"] ? true : false}
-              onChange={(e)=>this.setState({qtd: e.target.value})}
-              name="cod"
+              error={errors["quantity"] ? true : false}
+              onChange={(e)=>this.setState({quantity: e.target.value})}
+              name="code"
               width={8}
             />
             </div>

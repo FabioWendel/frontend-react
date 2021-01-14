@@ -9,11 +9,11 @@ export default class ModalDelete extends Component {
   delete = async () => {
     const id = this.props.itemSelect.id
     try {
-      await api.delete(`/produto/${id}/`)
+      await api.delete(`/produtos/${id}/`)
       success("Produto excluido com sucesso!");
       this.props.callback(false);
     } catch (e) {
-      error("Ops... algum problema");
+      error(e.response.data.error !== "Token not provided" ? "Ops... algum problema" : "Token inválido faça Login e tente Novamente");
     }
   }
   render() {

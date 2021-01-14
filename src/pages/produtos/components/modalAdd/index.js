@@ -5,44 +5,44 @@ import { success, error } from '../../../../utils/toast'
 export default class ModalAdd extends Component {
   state = {
     name: "",
-    cod: "",
+    code: "",
     value: "",
-    qtd: "",
+    quantity: "",
     errors: {}
   };
 
   onAdd = async () => {
-    const { name, cod, value, qtd } = this.state;
+    const { name, code, value, quantity } = this.state;
     const errors = this.validateForm();
     if(errors){
       error("Preencha todos os campos obrigatórios!");
       return;
     }
     try {
-      let data = {"name": name, "cod": cod, "value": value, "qtd": qtd};
-      await api.post('/produto/', data);
+      let data = {"name": name, "code": code, "value": value, "quantity": quantity};
+      await api.post('/produtos/', data);
       success("Produto adicionado com sucesso!");
       this.props.callback(false);
     } catch (e) {
-      error("Ops... algum problema")
+      error(e.response.data.error !== "Produto already exists." ? "Ops... algum problema" : "Produto com mesmo código existente");
     }
   }
 
   validateForm = () => {
     const errors = {};
-    const {name, cod, value, qtd} = this.state;
+    const {name, code, value, quantity} = this.state;
 
     if (name === "") {
       errors["name"] = true;
     }
-    if (cod === "") {
-      errors["cod"] = true;
+    if (code === "") {
+      errors["code"] = true;
     }
     if (value === "") {
       errors["value"] = true;
     }
-    if (qtd === "") {
-      errors["qtd"] = true;
+    if (quantity === "") {
+      errors["quantity"] = true;
     }
     
     this.setState({ errors });
@@ -50,11 +50,11 @@ export default class ModalAdd extends Component {
   };
 
   clear = () => {
-    this.setState({name: "",cod: "", value:"", qtd:""})
+    this.setState({name: "",code: "", value:"", quantity:""})
   };
 
   render() {
-    const {name, cod, value, qtd ,errors} = this.state;
+    const {name, code, value, quantity ,errors} = this.state;
 
     return (
       <Modal
@@ -81,11 +81,11 @@ export default class ModalAdd extends Component {
             <Form.Input
               label="Código"
               placeholder="22883044"
-              name="cod"
+              name="code"
               maxLength="30"
-              value={cod}
-              error={errors["cod"] ? true : false}
-              onChange={(e)=>this.setState({cod: e.target.value})}
+              value={code}
+              error={errors["code"] ? true : false}
+              onChange={(e)=>this.setState({code: e.target.value})}
               required
               width={5}
             />
@@ -108,11 +108,11 @@ export default class ModalAdd extends Component {
               placeholder="3"
               required
               type="number"
-              value={qtd}
+              value={quantity}
               maxLength="6"
-              error={errors["qtd"] ? true : false}
-              onChange={(e)=>this.setState({qtd: e.target.value})}
-              name="cod"
+              error={errors["quantity"] ? true : false}
+              onChange={(e)=>this.setState({quantity: e.target.value})}
+              name="code"
               width={8}
             />
             </div>

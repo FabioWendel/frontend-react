@@ -32,9 +32,13 @@ class Produtos extends Component {
   loadData = async ()  => {
     let search = [{text:"Todos",value:"all"}]
     try {
-      const { data:produtos}  = await api.get('/produto/');
+      const { data:produtos}  = await api.get('/produtos', {
+        headers: {
+          'Authorization':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjEwNTcwNzcxLCJleHAiOjE2MTExNzU1NzF9.xbCBHjpKTckBtS9vGml3ChfAM7N3dd7Wyj8RRB1Aoqo'
+        }
+      });
       produtos.length === 0 ?this.setState({isEmpty: true}):this.setState({isEmpty: false})
-      produtos.map((e)=>search.push({text: e.name+" - "+e.cod, value:e.name}))
+      produtos.map((e)=>search.push({text: e.name+" - "+e.code, value:e.name}))
       this.setState({data: produtos,dataFix: produtos, dataSeach: search});
     } catch (e) {
       error("Ops... algum problema na conexão");
@@ -51,7 +55,7 @@ class Produtos extends Component {
     var re = new RegExp(select, "gi");
     const newData = dataFix.filter(
       (item) =>
-        item.name.match(re) || item.cod.match(re)
+        item.name.match(re) || item.code.match(re)
     );
     this.setState({ data: newData });
   };
@@ -101,9 +105,9 @@ class Produtos extends Component {
             {data.map((item,i)=>(
               <Table.Row key={i}>
                 <Table.Cell >{item.name}</Table.Cell>
-                <Table.Cell >{item.cod} </Table.Cell>
+                <Table.Cell >{item.code} </Table.Cell>
                 <Table.Cell >R$ {item.value}</Table.Cell>
-                <Table.Cell textAlign="center" >{item.qtd}</Table.Cell>
+                <Table.Cell textAlign="center" >{item.quantity}</Table.Cell>
                 <Table.Cell textAlign="center">
                   <Icon circular link inverted color="blue" name="edit outline" onClick={()=> this.setState({itemSelect: item, editModal: true})}/>
                   <Icon circular link inverted color="red" name="trash alternate outline" onClick={()=> this.setState({itemSelect: item, deleteModal: true})}/>
